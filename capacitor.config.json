@@ -1,0 +1,11 @@
+{
+  "appId": "com.ebmarketiza.app",
+  "appName": "E&B MARKETIZA",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

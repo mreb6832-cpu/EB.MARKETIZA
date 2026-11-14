@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Products | EB MARKETIZA</title>
+
+<meta
+  name="description"
+  content="Shop products at EB MARKETIZA."
+>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#f5f5f5;
+  color:#111827;
+}
+
+header{
+  background:#111827;
+  color:white;
+  padding:16px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+header h1{
+  font-size:22px;
+}
+
+nav{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+}
+
+nav a{
+  color:white;
+  text-decoration:none;
+}
+
+main{
+  max-width:1200px;
+  margin:30px auto;
+  padding:0 18px;
+}
+
+.page-title{
+  margin-bottom:25px;
+}
+
+.page-title h2{
+  font-size:30px;
+  margin-bottom:8px;
+}
+
+.page-title p{
+  color:#6b7280;
+}
+
+.filters{
+  background:white;
+  padding:18px;
+  border-radius:12px;
+  margin-bottom:25px;
+
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+#search{
+  flex:1;
+  min-width:220px;
+  padding:12px;
+  border:1px solid #d1d5db;
+  border-radius:8px;
+  font-size:15px;
+}
+
+.category-button{
+  padding:11px 15px;
+  border:0;
+  border-radius:8px;
+  background:#e5e7eb;
+  cursor:pointer;
+}
+
+.category-button.active{
+  background:#111827;
+  color:white;
+}
+
+#message{
+  display:none;
+  background:#fee2e2;
+  color:#991b1b;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:20px;
+}
+
+#loading{
+  text-align:center;
+  padding:40px;
+  background:white;
+  border-radius:12px;
+}
+
+#productsGrid{
+  display:grid;
+  grid-template-columns:
+    repeat(auto-fill,minmax(230px,1fr));
+  gap:22px;
+}
+
+.product-card{
+  background:white;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 5px 18px rgba(0,0,0,.07);
+  transition:transform .2s;
+}
+
+.product-card:hover{
+  transform:translateY(-3px);
+}
+
+.product-image{
+  width:100%;
+  height:250px;
+  background:#f3f4f6;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  overflow:hidden;
+}
+
+.product-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.no-image{
+  color:#777;
+  font-size:15px;
+}
+
+.product-info{
+  padding:17px;
+}
+
+.product-name{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.product-category{
+  color:#6b7280;
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+.product-price{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.product-stock{
+  font-size:14px;
+  margin-bottom:15px;
+}
+
+.view-button{
+  display:block;
+  width:100%;
+  padding:12px;
+  background:#111827;
+  color:white;
+  text-decoration:none;
+  text-align:center;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+.view-button:hover{
+  background:#2563eb;
+}
+
+.empty{
+  grid-column:1/-1;
+  text-align:center;
+  background:white;
+  padding:40px;
+  border-radius:12px;
+  color:#6b7280;
+}
+
+@media(max-width:600px){
+
+  main{
+    padding:0 12px;
+  }
+
+  .page-title h2{
+    font-size:25px;
+  }
+
+  #productsGrid{
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
+
+  .product-image{
+    height:190px;
+  }
+
+  .product-info{
+    padding:12px;
+  }
+
+  .product-name{
+    font-size:15px;
+  }
+
+  .product-price{
+    font-size:17px;
+  }
+
+}
+
+@media(max-width:380px){
+
+  #productsGrid{
+    grid-template-columns:1fr;
+  }
+
+}
+</style>
+
+  <!-- E&B MARKETIZA installable app support -->
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <meta name="theme-color" content="#050505">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="EB MARKETIZA">
+
+</head>
+
+<body>
+
+<header>
+
+  <h1>EB MARKETIZA</h1>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="cart.html">🛒 Cart</a>
+    <a href="account.html">Account</a>
+  </nav>
+
+</header>
+
+
+<main>
+
+  <div class="page-title">
+
+    <h2>Latest Products</h2>
+
+    <p>
+      Discover products available at EB MARKETIZA.
+    </p>
+
+  </div>
+
+
+  <div class="filters">
+
+    <input
+      id="search"
+      type="search"
+      placeholder="Search products..."
+    >
+
+    <button
+      class="category-button active"
+      data-category="all"
+      type="button"
+    >
+      All
+    </button>
+
+    <div id="categoryButtons"></div>
+
+  </div>
+
+
+  <div id="message"></div>
+
+
+  <div id="loading">
+    Loading products...
+  </div>
+
+
+  <div id="productsGrid"></div>
+
+</main>
+
+
+<script type="module">
+
+import { supabase } from "./supabaseClient.js";
+
+
+/* ==========================================
+   ELEMENTS
+========================================== */
+
+const loading =
+  document.getElementById("loading");
+
+const productsGrid =
+  document.getElementById("productsGrid");
+
+const message =
+  document.getElementById("message");
+
+const search =
+  document.getElementById("search");
+
+const categoryButtons =
+  document.getElementById("categoryButtons");
+
+
+/* ==========================================
+   DATA
+========================================== */
+
+let products = [];
+
+let selectedCategory = "all";
+
+
+/* ==========================================
+   PRICE
+========================================== */
+
+function formatPrice(price){
+
+  return new Intl.NumberFormat(
+    "sv-SE",
+    {
+      style:"currency",
+      currency:"SEK"
+    }
+  ).format(Number(price || 0));
+
+}
+
+
+/* ==========================================
+   IMAGE URL
+========================================== */
+
+function getImageURL(image){
+
+  if(!image){
+    return "";
+  }
+
+  return (
+    image.image_url ||
+    image.public_url ||
+    image.url ||
+    image.image ||
+    ""
+  );
+
+}
+
+
+/* ==========================================
+   LOAD PRODUCTS
+========================================== */
+
+async function loadProducts(){
+
+  loading.style.display =
+    "block";
+
+  productsGrid.innerHTML = "";
+
+  message.style.display =
+    "none";
+
+
+  try{
+
+    /* ======================================
+       PRODUCTS
+    ====================================== */
+
+    const {
+      data:productData,
+      error:productError
+    } =
+      await supabase
+        .from("products")
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        );
+
+
+    if(productError){
+
+      throw new Error(
+        productError.message
+      );
+
+    }
+
+
+    products =
+      productData || [];
+
+
+    /* ======================================
+       PRODUCT IMAGES
+
+       Uses the same columns as admin.html:
+       id
+       product_id
+       image_url
+       is_primary
+    ====================================== */
+
+    const {
+      data:imageData,
+      error:imageError
+    } =
+      await supabase
+        .from("product_images")
+        .select(
+          "id,product_id,image_url,is_primary"
+        )
+        .order(
+          "is_primary",
+          {
+            ascending:false
+          }
+        );
+
+
+    if(imageError){
+
+      console.error(
+        "Product images error:",
+        imageError
+      );
+
+    }
+
+
+    const imageMap =
+      new Map();
+
+
+    (imageData || []).forEach(
+      image => {
+
+        if(!imageMap.has(
+          image.product_id
+        )){
+
+          imageMap.set(
+            image.product_id,
+            []
+          );
+
+        }
+
+        imageMap
+          .get(image.product_id)
+          .push(image);
+
+      }
+    );
+
+
+    /* ======================================
+       ATTACH IMAGES TO PRODUCTS
+    ====================================== */
+
+    products =
+      products.map(product => ({
+
+        ...product,
+
+        product_images:
+          imageMap.get(product.id) || []
+
+      }));
+
+
+    /* ======================================
+       CATEGORIES
+    ====================================== */
+
+    createCategoryButtons();
+
+
+    /* ======================================
+       DISPLAY
+    ====================================== */
+
+    renderProducts();
+
+
+  }catch(error){
+
+    console.error(
+      "PRODUCTS ERROR:",
+      error
+    );
+
+
+    message.style.display =
+      "block";
+
+    message.textContent =
+      "Could not load products: " +
+      error.message;
+
+
+  }finally{
+
+    loading.style.display =
+      "none";
+
+  }
+
+}
+
+
+/* ==========================================
+   CATEGORIES
+========================================== */
+
+function createCategoryButtons(){
+
+  categoryButtons.innerHTML = "";
+
+
+  const categories =
+    [
+      ...new Set(
+        products
+          .map(
+            product =>
+              product.category
+          )
+          .filter(Boolean)
+      )
+    ]
+    .sort();
+
+
+  categories.forEach(
+    category => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+      button.type = "button";
+
+      button.className =
+        "category-button";
+
+      button.textContent =
+        category;
+
+
+      button.addEventListener(
+        "click",
+        ()=>{
+
+          selectedCategory =
+            category;
+
+          document
+            .querySelectorAll(
+              ".category-button"
+            )
+            .forEach(
+              item =>
+                item.classList.remove(
+                  "active"
+                )
+            );
+
+          button.classList.add(
+            "active"
+          );
+
+          renderProducts();
+
+        }
+      );
+
+
+      categoryButtons.appendChild(
+        button
+      );
+
+    }
+  );
+
+
+  const allButton =
+    document.querySelector(
+      '[data-category="all"]'
+    );
+
+
+  allButton.addEventListener(
+    "click",
+    ()=>{
+
+      selectedCategory =
+        "all";
+
+      document
+        .querySelectorAll(
+          ".category-button"
+        )
+        .forEach(
+          item =>
+            item.classList.remove(
+              "active"
+            )
+        );
+
+      allButton.classList.add(
+        "active"
+      );
+
+      renderProducts();
+
+    }
+  );
+
+}
+
+
+/* ==========================================
+   GET PRODUCT IMAGE
+========================================== */
+
+function getProductImage(product){
+
+  const images =
+    product.product_images || [];
+
+
+  /* Primary image first */
+
+  const primary =
+    images.find(
+      image =>
+        image.is_primary === true &&
+        getImageURL(image)
+    );
+
+
+  if(primary){
+
+    return getImageURL(primary);
+
+  }
+
+
+  /* Any product_images image */
+
+  const firstImage =
+    images.find(
+      image =>
+        getImageURL(image)
+    );
+
+
+  if(firstImage){
+
+    return getImageURL(
+      firstImage
+    );
+
+  }
+
+
+  /* Fallback to products.image */
+
+  return (
+    product.image ||
+    product.image_url ||
+    product.public_url ||
+    ""
+  );
+
+}
+
+
+/* ==========================================
+   RENDER PRODUCTS
+========================================== */
+
+function renderProducts(){
+
+  productsGrid.innerHTML = "";
+
+
+  const searchText =
+    search.value
+      .trim()
+      .toLowerCase();
+
+
+  const filtered =
+    products.filter(
+      product => {
+
+        const matchesSearch =
+          !searchText ||
+          String(
+            product.name || ""
+          )
+          .toLowerCase()
+          .includes(searchText) ||
+
+          String(
+            product.category || ""
+          )
+          .toLowerCase()
+          .includes(searchText);
+
+
+        const matchesCategory =
+          selectedCategory === "all" ||
+          String(
+            product.category || ""
+          ).toLowerCase() ===
+          String(
+            selectedCategory
+          ).toLowerCase();
+
+
+        return (
+          matchesSearch &&
+          matchesCategory
+        );
+
+      }
+    );
+
+
+  if(!filtered.length){
+
+    productsGrid.innerHTML = `
+      <div class="empty">
+        No products found.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  filtered.forEach(
+    product => {
+
+      const image =
+        getProductImage(
+          product
+        );
+
+
+      const stock =
+        Number(
+          product.stock || 0
+        );
+
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+      card.className =
+        "product-card";
+
+
+      card.innerHTML = `
+
+        <div class="product-image">
+
+          ${
+            image
+
+            ?
+
+            `<img
+              src="${escapeHtml(image)}"
+              alt="${escapeHtml(product.name || "Product")}"
+              loading="lazy"
+            >`
+
+            :
+
+            `<span class="no-image">
+              No image
+            </span>`
+          }
+
+        </div>
+
+
+        <div class="product-info">
+
+          <div class="product-name">
+            ${escapeHtml(
+              product.name ||
+              "Unnamed Product"
+            )}
+          </div>
+
+
+          <div class="product-category">
+            ${escapeHtml(
+              product.category ||
+              "General"
+            )}
+          </div>
+
+
+          <div class="product-price">
+            ${formatPrice(
+              product.price
+            )}
+          </div>
+
+
+          <div class="product-stock">
+
+            ${
+              stock > 0
+
+              ?
+
+              `In stock: ${stock}`
+
+              :
+
+              `Out of stock`
+            }
+
+          </div>
+
+
+          <a
+            class="view-button"
+            href="product-details.html?id=${encodeURIComponent(product.id)}"
+          >
+            View Product
+          </a>
+
+        </div>
+
+      `;
+
+
+      /* ====================================
+         IMAGE ERROR
+      ==================================== */
+
+      const imageElement =
+        card.querySelector(
+          ".product-image img"
+        );
+
+
+      if(imageElement){
+
+        imageElement.addEventListener(
+          "error",
+          ()=>{
+
+            imageElement.parentElement.innerHTML = `
+              <span class="no-image">
+                Image could not be loaded
+              </span>
+            `;
+
+          }
+        );
+
+      }
+
+
+      productsGrid.appendChild(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+/* ==========================================
+   ESCAPE HTML
+========================================== */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* ==========================================
+   SEARCH
+========================================== */
+
+search.addEventListener(
+  "input",
+  renderProducts
+);
+
+
+/* ==========================================
+   START
+========================================== */
+
+loadProducts();
+
+</script>
+
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch((error) =>
+      console.error("E&B MARKETIZA service worker registration failed:", error)
+    );
+  });
+}
+</script>
+
+</body>
+</html>

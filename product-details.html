@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Product Details | EB MARKETIZA</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#f5f5f5;
+  color:#111;
+}
+
+header{
+  background:#111827;
+  color:white;
+  padding:16px 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+header h1{
+  font-size:22px;
+}
+
+nav{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+}
+
+nav a{
+  color:white;
+  text-decoration:none;
+}
+
+main{
+  max-width:1150px;
+  margin:30px auto;
+  padding:0 18px;
+}
+
+.back{
+  display:inline-block;
+  margin-bottom:20px;
+  color:#111;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.loading,
+.error{
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  text-align:center;
+}
+
+.error{
+  display:none;
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.product{
+  display:none;
+  background:white;
+  border-radius:16px;
+  padding:25px;
+  box-shadow:0 5px 25px rgba(0,0,0,.08);
+
+  grid-template-columns:1fr 1fr;
+  gap:35px;
+}
+
+.main-image{
+  width:100%;
+  height:480px;
+  background:#f3f4f6;
+  border-radius:14px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  overflow:hidden;
+}
+
+.main-image img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.no-image{
+  color:#777;
+  font-size:18px;
+}
+
+.thumbnails{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+  overflow-x:auto;
+}
+
+.thumbnail{
+  width:75px;
+  height:75px;
+  flex-shrink:0;
+
+  padding:0;
+  border:2px solid transparent;
+  border-radius:8px;
+
+  overflow:hidden;
+  background:#eee;
+  cursor:pointer;
+}
+
+.thumbnail.active{
+  border-color:#111;
+}
+
+.thumbnail img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.details h2{
+  font-size:32px;
+  margin-bottom:20px;
+}
+
+.price{
+  font-size:28px;
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+.stock{
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+.description{
+  color:#555;
+  line-height:1.7;
+  white-space:pre-wrap;
+}
+
+.quantity{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin:25px 0;
+}
+
+.quantity button{
+  width:40px;
+  height:40px;
+
+  border:0;
+  border-radius:7px;
+
+  background:#111827;
+  color:white;
+
+  font-size:20px;
+  cursor:pointer;
+}
+
+.quantity button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+#quantityValue{
+  min-width:30px;
+  text-align:center;
+  font-weight:bold;
+  font-size:18px;
+}
+
+#addToCart{
+  width:100%;
+  padding:16px;
+
+  border:0;
+  border-radius:8px;
+
+  background:#111827;
+  color:white;
+
+  font-size:17px;
+  font-weight:bold;
+
+  cursor:pointer;
+}
+
+#addToCart:disabled{
+  background:#999;
+  cursor:not-allowed;
+}
+
+#cartMessage{
+  display:none;
+  margin-top:15px;
+  padding:14px;
+  border-radius:8px;
+  background:#dcfce7;
+  color:#166534;
+}
+
+@media(max-width:800px){
+
+  .product{
+    grid-template-columns:1fr;
+  }
+
+  .main-image{
+    height:350px;
+  }
+
+  .details h2{
+    font-size:26px;
+  }
+}
+</style>
+
+  <!-- E&B MARKETIZA installable app support -->
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <meta name="theme-color" content="#050505">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="EB MARKETIZA">
+
+</head>
+
+<body>
+
+<header>
+
+  <h1>EB MARKETIZA</h1>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="cart.html">🛒 Cart</a>
+  </nav>
+
+</header>
+
+
+<main>
+
+  <a class="back" href="products.html">
+    ← Back to Products
+  </a>
+
+
+  <div id="loading" class="loading">
+    Loading product...
+  </div>
+
+
+  <div id="error" class="error"></div>
+
+
+  <section id="product" class="product">
+
+    <!-- GALLERY -->
+
+    <div>
+
+      <div id="mainImage" class="main-image">
+        <span class="no-image">
+          No image available
+        </span>
+      </div>
+
+      <div id="thumbnails" class="thumbnails"></div>
+
+    </div>
+
+
+    <!-- DETAILS -->
+
+    <div class="details">
+
+      <h2 id="productName"></h2>
+
+      <div id="productPrice" class="price"></div>
+
+      <div id="productStock" class="stock"></div>
+
+      <div id="productDescription" class="description"></div>
+
+
+      <div class="quantity">
+
+        <button id="minusButton" type="button">
+          −
+        </button>
+
+        <span id="quantityValue">
+          1
+        </span>
+
+        <button id="plusButton" type="button">
+          +
+        </button>
+
+      </div>
+
+
+      <button id="addToCart" type="button">
+        Add to Cart
+      </button>
+
+
+      <div id="cartMessage"></div>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<script type="module">
+
+import { supabase } from "./supabaseClient.js";
+
+
+/* ==========================================
+   PRODUCT ID
+========================================== */
+
+const params =
+  new URLSearchParams(window.location.search);
+
+const productId =
+  params.get("id");
+
+
+/* ==========================================
+   ELEMENTS
+========================================== */
+
+const loading =
+  document.getElementById("loading");
+
+const errorBox =
+  document.getElementById("error");
+
+const productBox =
+  document.getElementById("product");
+
+const productName =
+  document.getElementById("productName");
+
+const productPrice =
+  document.getElementById("productPrice");
+
+const productStock =
+  document.getElementById("productStock");
+
+const productDescription =
+  document.getElementById("productDescription");
+
+const mainImage =
+  document.getElementById("mainImage");
+
+const thumbnails =
+  document.getElementById("thumbnails");
+
+const minusButton =
+  document.getElementById("minusButton");
+
+const plusButton =
+  document.getElementById("plusButton");
+
+const quantityValue =
+  document.getElementById("quantityValue");
+
+const addToCart =
+  document.getElementById("addToCart");
+
+const cartMessage =
+  document.getElementById("cartMessage");
+
+
+let product = null;
+
+let quantity = 1;
+
+let images = [];
+
+
+/* ==========================================
+   ERROR
+========================================== */
+
+function showError(text){
+
+  loading.style.display = "none";
+
+  productBox.style.display = "none";
+
+  errorBox.style.display = "block";
+
+  errorBox.textContent = text;
+
+}
+
+
+/* ==========================================
+   PRICE
+========================================== */
+
+function formatPrice(price){
+
+  return new Intl.NumberFormat(
+    "sv-SE",
+    {
+      style:"currency",
+      currency:"SEK"
+    }
+  ).format(Number(price || 0));
+
+}
+
+
+/* ==========================================
+   GET IMAGE URL
+========================================== */
+
+function getImageURL(row){
+
+  if(!row){
+    return "";
+  }
+
+  return (
+    row.image_url ||
+    row.public_url ||
+    row.url ||
+    row.image ||
+    ""
+  );
+
+}
+
+
+/* ==========================================
+   SHOW MAIN IMAGE
+========================================== */
+
+function showMainImage(url){
+
+  mainImage.innerHTML = "";
+
+  if(!url){
+
+    mainImage.innerHTML = `
+      <span class="no-image">
+        No image available
+      </span>
+    `;
+
+    return;
+  }
+
+
+  const img =
+    document.createElement("img");
+
+  img.src = url;
+
+  img.alt =
+    product?.name || "Product";
+
+
+  img.onerror = () => {
+
+    mainImage.innerHTML = `
+      <span class="no-image">
+        Image could not be loaded
+      </span>
+    `;
+
+  };
+
+
+  mainImage.appendChild(img);
+
+}
+
+
+/* ==========================================
+   THUMBNAILS
+========================================== */
+
+function renderThumbnails(){
+
+  thumbnails.innerHTML = "";
+
+
+  images.forEach((row,index)=>{
+
+    const url =
+      getImageURL(row);
+
+    if(!url){
+      return;
+    }
+
+
+    const button =
+      document.createElement("button");
+
+    button.type = "button";
+
+    button.className =
+      "thumbnail";
+
+
+    if(index === 0){
+
+      button.classList.add(
+        "active"
+      );
+
+    }
+
+
+    const img =
+      document.createElement("img");
+
+    img.src = url;
+
+    img.alt =
+      "Product image";
+
+
+    img.onerror = () => {
+
+      button.remove();
+
+    };
+
+
+    button.appendChild(img);
+
+
+    button.addEventListener(
+      "click",
+      ()=>{
+
+        document
+          .querySelectorAll(".thumbnail")
+          .forEach(item=>{
+            item.classList.remove(
+              "active"
+            );
+          });
+
+
+        button.classList.add(
+          "active"
+        );
+
+
+        showMainImage(url);
+
+      }
+    );
+
+
+    thumbnails.appendChild(button);
+
+  });
+
+}
+
+
+/* ==========================================
+   LOAD PRODUCT
+========================================== */
+
+async function loadProduct(){
+
+  try{
+
+    console.log(
+      "Loading product:",
+      productId
+    );
+
+
+    if(!productId){
+
+      throw new Error(
+        "Product ID is missing."
+      );
+
+    }
+
+
+    /* ======================================
+       GET PRODUCT
+    ====================================== */
+
+    const {
+      data,
+      error
+    } =
+      await supabase
+        .from("products")
+        .select("*")
+        .eq("id",productId)
+        .maybeSingle();
+
+
+    console.log(
+      "Product data:",
+      data
+    );
+
+
+    console.log(
+      "Product error:",
+      error
+    );
+
+
+    if(error){
+
+      throw new Error(
+        error.message
+      );
+
+    }
+
+
+    if(!data){
+
+      throw new Error(
+        "Product not found."
+      );
+
+    }
+
+
+    product = data;
+
+
+    /* ======================================
+       GET PRODUCT IMAGES
+
+       IMPORTANT:
+       We DO NOT use sort_order here.
+       Your admin.html uses:
+       id
+       product_id
+       image_url
+       is_primary
+    ====================================== */
+
+    const {
+      data:imageData,
+      error:imageError
+    } =
+      await supabase
+        .from("product_images")
+        .select(
+          "id,product_id,image_url,is_primary"
+        )
+        .eq(
+          "product_id",
+          productId
+        )
+        .order(
+          "is_primary",
+          {
+            ascending:false
+          }
+        );
+
+
+    console.log(
+      "Image data:",
+      imageData
+    );
+
+
+    console.log(
+      "Image error:",
+      imageError
+    );
+
+
+    if(imageError){
+
+      throw new Error(
+        "Could not load product images: " +
+        imageError.message
+      );
+
+    }
+
+
+    images =
+      Array.isArray(imageData)
+        ? imageData.filter(
+            item => getImageURL(item)
+          )
+        : [];
+
+
+    /* ======================================
+       DISPLAY PRODUCT
+    ====================================== */
+
+    productName.textContent =
+      product.name || "Product";
+
+
+    productPrice.textContent =
+      formatPrice(product.price);
+
+
+    const stock =
+      Number(product.stock || 0);
+
+
+    productStock.textContent =
+      stock > 0
+        ? `In stock: ${stock}`
+        : "Out of stock";
+
+
+    productDescription.textContent =
+      product.description ||
+      "No description available.";
+
+
+    /* ======================================
+       DISPLAY IMAGES
+    ====================================== */
+
+    if(images.length > 0){
+
+      showMainImage(
+        getImageURL(images[0])
+      );
+
+      renderThumbnails();
+
+    }else{
+
+      showMainImage("");
+
+    }
+
+
+    /* ======================================
+       STOCK
+    ====================================== */
+
+    if(stock <= 0){
+
+      addToCart.disabled = true;
+
+      addToCart.textContent =
+        "Out of Stock";
+
+      minusButton.disabled = true;
+
+      plusButton.disabled = true;
+
+    }
+
+
+    /* ======================================
+       SHOW PRODUCT
+    ====================================== */
+
+    loading.style.display =
+      "none";
+
+    errorBox.style.display =
+      "none";
+
+    productBox.style.display =
+      "grid";
+
+
+  }catch(error){
+
+    console.error(
+      "PRODUCT DETAILS ERROR:",
+      error
+    );
+
+
+    showError(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* ==========================================
+   QUANTITY -
+========================================== */
+
+minusButton.addEventListener(
+  "click",
+  ()=>{
+
+    if(quantity > 1){
+
+      quantity--;
+
+      quantityValue.textContent =
+        quantity;
+
+    }
+
+  }
+);
+
+
+/* ==========================================
+   QUANTITY +
+========================================== */
+
+plusButton.addEventListener(
+  "click",
+  ()=>{
+
+    const stock =
+      Number(product?.stock || 0);
+
+
+    if(quantity < stock){
+
+      quantity++;
+
+      quantityValue.textContent =
+        quantity;
+
+    }
+
+  }
+);
+
+
+/* ==========================================
+   ADD TO CART
+========================================== */
+
+addToCart.addEventListener(
+  "click",
+  async ()=>{
+
+    try{
+
+      if(!product){
+        return;
+      }
+
+
+      const {
+        data:{
+          user
+        }
+      } =
+        await supabase.auth.getUser();
+
+
+      if(!user){
+
+        window.location.href =
+          "login.html";
+
+        return;
+
+      }
+
+
+      const {
+        data:existing,
+        error:existingError
+      } =
+        await supabase
+          .from("cart_items")
+          .select("*")
+          .eq(
+            "user_id",
+            user.id
+          )
+          .eq(
+            "product_id",
+            product.id
+          )
+          .maybeSingle();
+
+
+      if(existingError){
+
+        throw new Error(
+          existingError.message
+        );
+
+      }
+
+
+      if(existing){
+
+        const newQuantity =
+          Number(existing.quantity || 0)
+          + quantity;
+
+
+        if(
+          newQuantity >
+          Number(product.stock || 0)
+        ){
+
+          throw new Error(
+            "Not enough stock available."
+          );
+
+        }
+
+
+        const {
+          error
+        } =
+          await supabase
+            .from("cart_items")
+            .update({
+              quantity:newQuantity
+            })
+            .eq(
+              "id",
+              existing.id
+            );
+
+
+        if(error){
+
+          throw new Error(
+            error.message
+          );
+
+        }
+
+      }else{
+
+        const {
+          error
+        } =
+          await supabase
+            .from("cart_items")
+            .insert({
+
+              user_id:user.id,
+
+              product_id:product.id,
+
+              quantity:quantity
+
+            });
+
+
+        if(error){
+
+          throw new Error(
+            error.message
+          );
+
+        }
+
+      }
+
+
+      cartMessage.style.display =
+        "block";
+
+      cartMessage.textContent =
+        "Product added to cart successfully.";
+
+
+    }catch(error){
+
+      console.error(
+        "CART ERROR:",
+        error
+      );
+
+
+      cartMessage.style.display =
+        "block";
+
+      cartMessage.style.background =
+        "#fee2e2";
+
+      cartMessage.style.color =
+        "#991b1b";
+
+      cartMessage.textContent =
+        error.message;
+
+    }
+
+  }
+);
+
+
+/* ==========================================
+   START
+========================================== */
+
+loadProduct();
+
+</script>
+
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch((error) =>
+      console.error("E&B MARKETIZA service worker registration failed:", error)
+    );
+  });
+}
+</script>
+
+</body>
+</html>

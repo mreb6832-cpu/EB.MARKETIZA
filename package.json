@@ -1,0 +1,19 @@
+{
+  "name": "ebshop",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.0",
+    "stripe": "^18.5.0",
+    "@capacitor/core": "^7.4.3"
+  },
+  "scripts": {
+    "cap:sync": "cap sync",
+    "android": "cap open android",
+    "android:build": "cap sync android && cap open android"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3"
+  }
+}
